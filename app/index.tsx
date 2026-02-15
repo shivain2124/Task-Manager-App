@@ -3,13 +3,31 @@ import { useState } from "react";
 
 export default function HomeScreen() {
   const [newTask, setNewTask] = useState<string>("");
-  const [taskList, setTaskList] = useState<string[]>([]);
+  const [taskList, setTaskList] = useState<Task[]>([]);
 
   const addTask = () => {
     if (newTask.trim() === "") return;
 
-    setTaskList([...taskList, newTask]);
+    const taskObject = {
+      id: Date.now().toString(),
+      title: newTask,
+      completed: false,
+    };
+
+    setTaskList([...taskList, taskObject]);
     setNewTask("");
+  };
+
+  const toggle_Task=(id:string)=>{
+    const updated=taskList.map(task=>{
+      if(task.id===id){
+        return {...task,completed:!task.completed};
+      }
+      return task;
+    });
+
+    setTaskList(updated);
+}
   };
 
   return (
@@ -64,10 +82,16 @@ export default function HomeScreen() {
               borderRadius: 8,
             }}
           >
-            <Text>{item}</Text>
+            <Text>{item.title}</Text>
           </View>
         )}
       />
     </View>
   );
 }
+
+type Task = {
+  id: string;
+  title: string;
+  completed: boolean;
+};
