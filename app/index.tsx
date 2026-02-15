@@ -18,16 +18,21 @@ export default function HomeScreen() {
     setNewTask("");
   };
 
-  const toggle_Task=(id:string)=>{
-    const updated=taskList.map(task=>{
-      if(task.id===id){
-        return {...task,completed:!task.completed};
+  const toggleTask = (id: string) => {
+    const updated = taskList.map((task) => {
+      if (task.id === id) {
+        return { ...task, completed: !task.completed };
       }
       return task;
     });
 
     setTaskList(updated);
-}
+  };
+
+  const deleteTask = (id: string) => {
+    const updated = taskList.filter((task) => task.id !== id);
+
+    setTaskList(updated);
   };
 
   return (
@@ -72,7 +77,7 @@ export default function HomeScreen() {
 
       <FlatList
         data={taskList}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View
             style={{
@@ -80,9 +85,24 @@ export default function HomeScreen() {
               marginVertical: 6,
               backgroundColor: "#f2f2f2",
               borderRadius: 8,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <Text>{item.title}</Text>
+            <Pressable onPress={() => toggleTask(item.id)}>
+              <Text
+                style={{
+                  textDecorationLine: item.completed ? "line-through" : "none",
+                }}
+              >
+                {item.title}
+              </Text>
+            </Pressable>
+
+            <Pressable onPress={() => deleteTask(item.id)}>
+              <Text style={{ color: "red" }}>Delete</Text>
+            </Pressable>
           </View>
         )}
       />
